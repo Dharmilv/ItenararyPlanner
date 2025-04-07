@@ -1,0 +1,47 @@
+@media print {
+    .no-print {
+      display: none !important;
+    }
+  
+    .image-gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      page-break-inside: avoid;
+    }
+  
+    .image-gallery img {
+      max-width: 100%;
+      max-height: 400px;
+      margin-bottom: 10px;
+      page-break-inside: avoid;
+    }
+  
+    body {
+      margin: 0;
+      padding: 0;
+    }
+  }
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+  
+    body {
+      -webkit-print-color-adjust: exact;
+    }
+  
+    img {
+      max-width: 100% !important;
+      height: auto !important;
+    }
+  
+    .printable-gallery {
+      display: grid !important;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+      gap: 1rem;
+      page-break-inside: avoid;
+    }
+  }
+    
