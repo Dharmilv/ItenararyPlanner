@@ -3,6 +3,64 @@ import axios from "axios";
 import { jsPDF } from "jspdf"; // Import jsPDF
 import "./Chatbot.css";
 
+// Function to format the itinerary professionally
+const formatItinerary = (itineraryText) => {
+  try {
+    // Check if itineraryText is an object
+    if (typeof itineraryText === 'object' && itineraryText !== null) {
+      // Convert the object to a string
+      itineraryText = JSON.stringify(itineraryText, null, 2);
+    }
+
+    // Remove asterisks and trim whitespace
+    const cleanedText = itineraryText.replace(/\*/g, '').trim();
+    const lines = cleanedText.split('\n');
+    let formattedHTML = '';
+    let isList = false;
+
+    lines.forEach(line => {
+      line = line.trim();
+      if (!line) return; // Skip empty lines
+
+      if (/^Day\s*\d+:/i.test(line)) {
+        // Day heading
+        if (isList) {
+          formattedHTML += '</ul>'; // Close previous list if any
+          isList = false;
+        }
+        formattedHTML += `<h5 style="margin-top: 1rem; margin-bottom: 0.5rem;"><strong>${line}</strong></h5>`;
+      } else if (line.startsWith('-') || /^\d+\./.test(line)) {
+        // List item (starts with '-' or '1.')
+        if (!isList) {
+          formattedHTML += '<ul style="list-style-position: inside; padding-left: 0; margin-bottom: 1rem;">';
+          isList = true;
+        }
+        formattedHTML += `<li style="margin-bottom: 0.25rem;">${line.replace(/^- |^\d+\.\s*/, '')}</li>`; // Remove list marker
+      } else {
+        // Regular paragraph or note
+        if (isList) {
+          formattedHTML += '</ul>'; // Close previous list if any
+          isList = false;
+        }
+         // Check if it looks like a note section header
+        if (/^(Notes|Important Information|Tips):/i.test(line)) {
+             formattedHTML += `<h6 style="margin-top: 1rem; margin-bottom: 0.5rem;"><strong>${line}</strong></h6>`;
+        } else {
+            formattedHTML += `<p style="margin-bottom: 0.5rem;">${line}</p>`;
+        }
+      }
+    });
+
+    if (isList) {
+      formattedHTML += '</ul>'; // Close any remaining list
+    }
+
+    return formattedHTML; // Return the raw HTML string
+  } catch (error) {
+    console.error("Error formatting itinerary:", error);
+    return '<p>Sorry, I couldn\'t format the itinerary properly.</p>'; // Return simple error message
+  }
+};
 
 const Chatbot = forwardRef((props, ref) => { // Wrap component with forwardRef
   const [messages, setMessages] = useState([]);
@@ -27,10 +85,13 @@ const Chatbot = forwardRef((props, ref) => { // Wrap component with forwardRef
       const res = await axios.post("http://localhost:5000/api/chat", {
         message: input,
       });
-      const botText = res.data.reply;
+      let botText = res.data.reply;
+      if (typeof botText === 'object' && botText !== null) {
+        botText = JSON.stringify(botText, null, 2);
+      }
       setMessages([...newMessages, { sender: "Bot", text: botText }]);
     } catch (err) {
-      console.error(err);
+      console.error("Error fetching itinerary:", err);
       setMessages([...newMessages, { sender: "Bot", text: "Oops! Something went wrong." }]);
     }
   };
@@ -54,12 +115,14 @@ const Chatbot = forwardRef((props, ref) => { // Wrap component with forwardRef
 
     // Function to add text with auto wrapping
     const addText = (text) => {
-      const textWidth = doc.getStringUnitWidth(text) * doc.getFontSize() / doc.internal.scaleFactor;
+      // Basic HTML stripping for PDF
+      const plainText = text.replace(/<[^>]*>/g, '');
+      const textWidth = doc.getStringUnitWidth(plainText) * doc.getFontSize() / doc.internal.scaleFactor;
       let xPos = marginLeft;
 
-      // Check if text fits in the page width, and wrap it if necessary
+      // Check if text fits in the page width, and wrap it if textWidth > maxWidth
       if (textWidth > maxWidth) {
-        const words = text.split(' ');
+        const words = plainText.split(' ');
         let line = '';
         for (let i = 0; i < words.length; i++) {
           const testLine = line + words[i] + ' ';
@@ -74,7 +137,7 @@ const Chatbot = forwardRef((props, ref) => { // Wrap component with forwardRef
         }
         doc.text(line, xPos, yOffset);
       } else {
-        doc.text(text, xPos, yOffset);
+        doc.text(plainText, xPos, yOffset);
       }
       yOffset += lineHeight;
     };
@@ -170,7 +233,7 @@ const Chatbot = forwardRef((props, ref) => { // Wrap component with forwardRef
               <div key={i} className={`message ${msg.sender === "You" ? "user" : "bot"}`}>
                 {msg.sender === "Bot" ? (
                   // Render bot messages using a formatting function
-                  <div>{msg.text}</div>
+                  <div className="card card-body text-start" dangerouslySetInnerHTML={{ __html: formatItinerary(msg.text) }}></div>
                 ) : (
                   // Render user messages as plain text
                   <div>{msg.text}</div>
