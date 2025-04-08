@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from "react"; // Import forwardRef and useImperativeHandle
+import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from "react";
 import axios from "axios";
-import { jsPDF } from "jspdf"; // Import jsPDF
+import { jsPDF } from "jspdf";
 import "./Chatbot.css";
 
-// Function to format the itinerary professionally
 const formatItinerary = (itineraryText) => {
   try {
     // Check if itineraryText is an object
@@ -12,60 +11,48 @@ const formatItinerary = (itineraryText) => {
       itineraryText = JSON.stringify(itineraryText, null, 2);
     }
 
-    // Remove asterisks and trim whitespace
-    const cleanedText = itineraryText.replace(/\*/g, '').trim();
-    const lines = cleanedText.split('\n');
-    let formattedHTML = '';
-    let isList = false;
+    const days = itineraryText.split(/(Day\s*\d+:)/i);
+    let itineraryPlan = '';
+    let notes = '';
 
-    lines.forEach(line => {
-      line = line.trim();
-      if (!line) return; // Skip empty lines
-
-      if (/^Day\s*\d+:/i.test(line)) {
-        // Day heading
-        if (isList) {
-          formattedHTML += '</ul>'; // Close previous list if any
-          isList = false;
-        }
-        formattedHTML += `<h5 style="margin-top: 1rem; margin-bottom: 0.5rem;"><strong>${line}</strong></h5>`;
-      } else if (line.startsWith('-') || /^\d+\./.test(line)) {
-        // List item (starts with '-' or '1.')
-        if (!isList) {
-          formattedHTML += '<ul style="list-style-position: inside; padding-left: 0; margin-bottom: 1rem;">';
-          isList = true;
-        }
-        formattedHTML += `<li style="margin-bottom: 0.25rem;">${line.replace(/^- |^\d+\.\s*/, '')}</li>`; // Remove list marker
+    days.forEach((part, index) => {
+      if (index % 2 === 1) {
+        // Itinerary part
+        itineraryPlan += part;
       } else {
-        // Regular paragraph or note
-        if (isList) {
-          formattedHTML += '</ul>'; // Close previous list if any
-          isList = false;
-        }
-         // Check if it looks like a note section header
-        if (/^(Notes|Important Information|Tips):/i.test(line)) {
-             formattedHTML += `<h6 style="margin-top: 1rem; margin-bottom: 0.5rem;"><strong>${line}</strong></h6>`;
-        } else {
-            formattedHTML += `<p style="margin-bottom: 0.5rem;">${line}</p>`;
-        }
+        // Notes part
+        notes += part;
       }
     });
 
-    if (isList) {
-      formattedHTML += '</ul>'; // Close any remaining list
+    let formattedHTML = '';
+    if (itineraryPlan) {
+      const itineraryItems = itineraryPlan.split('\n').filter(line => line.trim() !== '');
+      formattedHTML += '<h4 style="margin-bottom: 0.5rem;">Itinerary Plan:</h4>';
+      formattedHTML += '<ul style="list-style-position: inside; padding-left: 0; margin-bottom: 1rem;">';
+      itineraryItems.forEach(item => {
+        const cleanItem = item.replace(/\*/g, '').trim();
+        formattedHTML += `<li style="margin-bottom: 0.25rem;">${cleanItem}</li>`;
+      });
+      formattedHTML += '</ul><hr style="border-top: 1px solid #ccc; margin-bottom: 1rem;" />';
     }
 
-    return formattedHTML; // Return the raw HTML string
+    if (notes) {
+      notes = notes.replace(/\*/g, '').trim();
+      formattedHTML += '<h4>Notes:</h4><p style="white-space: pre-line;">' + notes + '</p>';
+    }
+
+    return formattedHTML;
   } catch (error) {
     console.error("Error formatting itinerary:", error);
-    return '<p>Sorry, I couldn\'t format the itinerary properly.</p>'; // Return simple error message
+    return '<p>Sorry, I couldn\'t format the itinerary properly.</p>';
   }
 };
 
-const Chatbot = forwardRef((props, ref) => { // Wrap component with forwardRef
+const Chatbot = forwardRef((props, ref) => {
   const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState(""); // Keep local input state for manual chat
-  const [isOpen, setIsOpen] = useState(false); // Toggle state
+  const [input, setInput] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
   const chatEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -91,36 +78,29 @@ const Chatbot = forwardRef((props, ref) => { // Wrap component with forwardRef
       }
       setMessages([...newMessages, { sender: "Bot", text: botText }]);
     } catch (err) {
-      console.error("Error fetching itinerary:", err);
+      console.error(err);
       setMessages([...newMessages, { sender: "Bot", text: "Oops! Something went wrong." }]);
     }
   };
 
-  // Function to generate and download the PDF
   const downloadPDF = () => {
     const doc = new jsPDF();
     doc.setFont("helvetica", "normal");
 
-    // Title for the PDF
     doc.text("Travel Itinerary", 20, 20);
 
-    // Define margins and line height
     const marginLeft = 20;
     const marginTop = 30;
     const maxWidth = 180;
     const lineHeight = 10;
 
-    // Initial Y position
     let yOffset = marginTop;
 
-    // Function to add text with auto wrapping
     const addText = (text) => {
-      // Basic HTML stripping for PDF
       const plainText = text.replace(/<[^>]*>/g, '');
       const textWidth = doc.getStringUnitWidth(plainText) * doc.getFontSize() / doc.internal.scaleFactor;
       let xPos = marginLeft;
 
-      // Check if text fits in the page width, and wrap it if textWidth > maxWidth
       if (textWidth > maxWidth) {
         const words = plainText.split(' ');
         let line = '';
@@ -142,36 +122,33 @@ const Chatbot = forwardRef((props, ref) => { // Wrap component with forwardRef
       yOffset += lineHeight;
     };
 
-    // Add each message from the conversation to the PDF
     messages.forEach((msg) => {
       addText(`${msg.sender}: ${msg.text}`);
-      if (yOffset > 270) { // Check if the text is overflowing and create a new page if necessary
+      if (yOffset > 270) {
         doc.addPage();
         yOffset = marginTop;
       }
     });
 
-    // Save the PDF
     doc.save("itinerary.pdf");
   };
 
-  // Expose generateItinerary function to parent component using ref
   useImperativeHandle(ref, () => ({
     generateItinerary: async (prompt) => {
-      setIsOpen(true); // Ensure the chatbot is open
+      setIsOpen(true);
 
       const newMessages = [...messages, { sender: "You", text: prompt }];
-      setMessages(newMessages); // Display the prompt immediately
+      setMessages(newMessages);
 
       try {
         const res = await axios.post("http://localhost:5000/api/chat", {
-          message: prompt, // Send the generated prompt to the backend
+          message: prompt,
         });
         let botText = res.data.reply;
         if (typeof botText === 'object' && botText !== null) {
           botText = JSON.stringify(botText, null, 2);
         }
-        setMessages([...newMessages, { sender: "Bot", text: botText }]); // Add bot's response
+        setMessages([...newMessages, { sender: "Bot", text: botText }]);
       } catch (err) {
         console.error("Error fetching itinerary:", err);
         setMessages([...newMessages, { sender: "Bot", text: "Sorry, I couldn't generate the itinerary." }]);
@@ -259,7 +236,6 @@ const Chatbot = forwardRef((props, ref) => { // Wrap component with forwardRef
           </button>
         </div>
       )}
-      
     </>
   );
 }); // Close the forwardRef wrapper
