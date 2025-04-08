@@ -1,11 +1,12 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from "react"; // Import forwardRef and useImperativeHandle
 import axios from "axios";
 import { jsPDF } from "jspdf"; // Import jsPDF
 import "./Chatbot.css";
 
-const Chatbot = () => {
+
+const Chatbot = forwardRef((props, ref) => { // Wrap component with forwardRef
   const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState(""); // Keep local input state for manual chat
   const [isOpen, setIsOpen] = useState(false); // Toggle state
   const chatEndRef = useRef(null);
 
@@ -91,6 +92,30 @@ const Chatbot = () => {
     doc.save("itinerary.pdf");
   };
 
+  // Expose generateItinerary function to parent component using ref
+  useImperativeHandle(ref, () => ({
+    generateItinerary: async (prompt) => {
+      setIsOpen(true); // Ensure the chatbot is open
+
+      const newMessages = [...messages, { sender: "You", text: prompt }];
+      setMessages(newMessages); // Display the prompt immediately
+
+      try {
+        const res = await axios.post("http://localhost:5000/api/chat", {
+          message: prompt, // Send the generated prompt to the backend
+        });
+        let botText = res.data.reply;
+        if (typeof botText === 'object' && botText !== null) {
+          botText = JSON.stringify(botText, null, 2);
+        }
+        setMessages([...newMessages, { sender: "Bot", text: botText }]); // Add bot's response
+      } catch (err) {
+        console.error("Error fetching itinerary:", err);
+        setMessages([...newMessages, { sender: "Bot", text: "Sorry, I couldn't generate the itinerary." }]);
+      }
+    }
+  }));
+
   return (
     <>
       {/* Toggle Button */}
@@ -143,7 +168,13 @@ const Chatbot = () => {
           <div className="chatbox">
             {messages.map((msg, i) => (
               <div key={i} className={`message ${msg.sender === "You" ? "user" : "bot"}`}>
-                <div className="message-text">{msg.text}</div>
+                {msg.sender === "Bot" ? (
+                  // Render bot messages using a formatting function
+                  <div>{msg.text}</div>
+                ) : (
+                  // Render user messages as plain text
+                  <div>{msg.text}</div>
+                )}
               </div>
             ))}
             <div ref={chatEndRef} />
@@ -168,6 +199,6 @@ const Chatbot = () => {
       
     </>
   );
-};
+}); // Close the forwardRef wrapper
 
 export default Chatbot;

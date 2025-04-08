@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react'; // Import useRef
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Page2 from './Page2';
@@ -11,6 +11,7 @@ import { User } from 'lucide-react';
 
 function HomePage() {
   const navigate = useNavigate();
+  const chatbotRef = useRef(null); // Create ref for Chatbot
   // Multi-step state: 1 for first form, 2 for additional options, 3 for showing tourist places
   const [formStep, setFormStep] = useState(1);
   // Form states
@@ -31,6 +32,8 @@ function HomePage() {
   const [numPeople, setNumPeople] = useState('');
   const [budget, setBudget] = useState(3000);
   const [mode, setMode] = useState('');
+  const [startDate, setStartDate] = useState(''); // State for start date
+  const [endDate, setEndDate] = useState(''); // State for end date
 
   // State to store tourist places returned from your proxy endpoint
   const [places, setPlaces] = useState([]);
@@ -81,13 +84,13 @@ function HomePage() {
     }
   };
 
-  const handleSuggestionClick = (sug, field) => {
+ const handleSuggestionClick = (sug, field) => {
     if (field === 'from') {
-      setFrom(sug);
-      setShowFromSuggestions(false);
+      setFrom(sug); // Set the 'from' state
+      setShowFromSuggestions(false); // Hide suggestions
     } else if (field === 'destination') {
-      setDestination(sug);
-      setShowDestinationSuggestions(false);
+      setDestination(sug); // Set the 'destination' state
+      setShowDestinationSuggestions(false); // Hide suggestions
     }
   };
 
@@ -160,9 +163,18 @@ function HomePage() {
       }
 
       console.log('Form data successfully saved to MongoDB');
-      setFormStep(3);
+
+      // Construct the prompt for the chatbot
+      const prompt = `Generate a travel itinerary starting from ${from} to ${destination} for ${numPeople} people with a budget of ₹${budget} per person, from ${startDate} to ${endDate}.`;
+
+      // Call the chatbot's generateItinerary function
+      if (chatbotRef.current) {
+        chatbotRef.current.generateItinerary(prompt);
+      }
+
+      setFormStep(3); // Move to the next step (displaying places)
     } catch (error) {
-      console.error("Error fetching tourist places:", error);
+      console.error("Error during final submission:", error); // Broader error logging
       alert("Error fetching tourist places. Please try again.");
     }
   };
@@ -222,7 +234,10 @@ function HomePage() {
                             key={index}
                             className="list-group-item list-group-item-action"
                             onClick={() => handleSuggestionClick(sug, 'from')}
-                            style={{ cursor: 'pointer' }}
+                            style={{
+                              cursor: 'pointer',
+                              backgroundColor: '#f8f9fa',
+                            }}
                           >
                             {sug}
                           </li>
@@ -245,14 +260,20 @@ function HomePage() {
                     {showDestinationSuggestions && destinationSuggestions.length > 0 && (
                       <ul
                         className="list-group position-absolute w-100 zindex-dropdown"
-                        style={{ maxHeight: '200px', overflowY: 'auto' }}
+                        style={{
+                          maxHeight: '200px',
+                          overflowY: 'auto',
+                        }}
                       >
                         {destinationSuggestions.map((sug, index) => (
                           <li
                             key={index}
                             className="list-group-item list-group-item-action"
                             onClick={() => handleSuggestionClick(sug, 'destination')}
-                            style={{ cursor: 'pointer' }}
+                            style={{
+                              cursor: 'pointer',
+                              backgroundColor: '#f8f9fa',
+                            }}
                           >
                             {sug}
                           </li>
@@ -263,8 +284,18 @@ function HomePage() {
                   <div className="mb-3">
                     <label className="form-label">When are you planning to travel?</label>
                     <div className="d-flex">
-                      <input type="date" className="form-control me-2" id="start-date" />
-                      <input type="date" className="form-control" id="end-date" />
+                      <input
+                        type="date"
+                        className="form-control me-2"
+                        id="start-date"
+                        onChange={(e) => setStartDate(e.target.value)} // Update start date state
+                      />
+                      <input
+                        type="date"
+                        className="form-control"
+                        id="end-date"
+                        onChange={(e) => setEndDate(e.target.value)} // Update end date state
+                      />
                     </div>
                   </div>
                   <button type="submit" className="btn btn-primary">
@@ -288,7 +319,7 @@ function HomePage() {
                     />
                   </div>
                   <div className="mb-3">
-                    <label htmlFor="budget" className="form-label">Budget (₹)</label>
+                    <label htmlFor="budget" className="form-label">Budget per Person (₹)</label> {/* Updated label */}
                     <input
                       type="range"
                       className="form-range"
@@ -299,7 +330,7 @@ function HomePage() {
                       value={budget}
                       onChange={(e) => setBudget(e.target.value)}
                     />
-                    <div>Selected Budget: {budget}</div>
+                    <div>Selected Budget per Person: {budget}</div> {/* Updated display text */}
                   </div>
                   <div className="d-flex justify-content-between">
                     <button className="btn btn-secondary" onClick={handleBack}>
@@ -354,7 +385,7 @@ function HomePage() {
       <Page2 />
       <Destinations />
       <ReviewComponent />
-      <Chatbot />
+      <Chatbot ref={chatbotRef} /> {/* Pass the ref to Chatbot */}
       {map && (
         <ItineraryMap />
       )}

@@ -1,194 +1,121 @@
-/* Add a full-screen overlay with blur effect */
-body {
-  transition: all 0.3s ease-in-out;
+.chatbot-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 50%; /* Cover half the page width */
+  height: 100%; /* Cover the entire page height */
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 0; /* Remove border radius */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
 }
 
-/* This class will be applied when the chatbot is visible */
 .chatbot-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-  z-index: 1000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  backdrop-filter: blur(8px); /* Apply the blur effect */
-}
-
-.chatbot-container {
   width: 100%;
   height: 100%;
-  max-width: 600px; /* Optional: Set max width if you don't want it to be too wide */
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  display: flex;
-  flex-direction: column;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+  z-index: 999; /* Ensure it's above other content but below the chatbot */
 }
 
-.chatbox {
-  flex: 1;
-  max-height: calc(100vh - 120px); /* Make chatbox flexible */
-  overflow-y: auto;
-  padding: 10px;
-  margin-bottom: 10px;
-}
-
-.message {
-  padding: 10px;
-  margin: 5px 0;
-  border-radius: 5px;
-  word-wrap: break-word;
-}
-
-.user {
-  background-color: #d1f7d1;
-  text-align: right;
-}
-
-.bot {
-  background-color: #f1f1f1;
-}
-
-.input-container {
-  display: flex;
-  gap: 10px;
-  padding: 10px;
-}
-
-input {
-  flex: 1;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
-button {
-  padding: 10px;
-  border-radius: 5px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
+.close-chatbot-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 5px;
   cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 16px;
 }
 
-button:hover {
-  background-color: #45a049;
-}
-/* Chatbot Container */
-.chatbot-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: #f9f9f9;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 9999;
-  overflow: hidden;
-  transform: scale(1);
-}
-
-/* Chatbox - the area where messages are displayed */
 .chatbox {
   flex-grow: 1;
+  padding: 10px;
   overflow-y: auto;
-  margin-bottom: 10px;
-  padding: 10px;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Message Styles */
 .message {
-  margin: 10px 0;
-  padding: 10px;
-  border-radius: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  clear: both;
 }
 
-.user {
-  background-color: #d1f7d1;
-  text-align: right;
+.message.user {
+  background-color: #e2f7cb;
+  float: right;
 }
 
-.bot {
-  background-color: #f1f1f1;
-  text-align: left;
+.message.bot {
+  background-color: #f0f0f0;
+  float: left;
 }
 
-.message-text {
-  word-wrap: break-word;
-}
-
-/* Input area at the bottom */
 .input-area {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
   padding: 10px;
-  background-color: #fff;
-  border-radius: 10px;
+  border-top: 1px solid #ccc;
 }
 
-input {
+.input-area input {
   flex-grow: 1;
-  padding: 10px;
-  border-radius: 5px;
+  padding: 8px;
   border: 1px solid #ccc;
-  font-size: 14px;
+  border-radius: 4px;
+  margin-right: 8px;
 }
 
-button {
+.input-area button {
+  padding: 8px 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.download-pdf-button {
   padding: 10px;
-  margin-left: 10px;
-  background-color: #4caf50;
+  background-color: #28a745;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
+  margin: 10px;
+  text-align: center;
+  display: block;
 }
 
-button:hover {
-  background-color: #45a049;
-}
-
-/* Button to toggle chat visibility */
-.chat-toggle-button {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
+/* Basic styling for the formatted itinerary output */
+.itinerary-output {
+  margin-top: 10px;
   padding: 15px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  font-size: 18px;
-  cursor: pointer;
-  z-index: 9999;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  line-height: 1.6;
 }
 
-.chat-toggle-button:hover {
-  background-color: #45a049;
+.itinerary-output h3 {
+  font-size: 1.2em;
+  margin-bottom: 0.5em;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.3em;
 }
 
-/* Optional: Add a backdrop to blur the background when the chatbot is visible */
-.chatbot-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.5);  /* Dark overlay */
-  backdrop-filter: blur(5px); /* Blur effect */
-  z-index: 9998;
+.itinerary-output ul {
+  padding-left: 0;
+  list-style-type: none;
 }
 
+.itinerary-output li {
+  margin-bottom: 0.5em;
+}
