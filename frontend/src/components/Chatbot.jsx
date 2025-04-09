@@ -64,7 +64,17 @@ const Chatbot = forwardRef((props, ref) => {
   const handleSend = async () => {
     if (!input.trim()) return;
 
-    const newMessages = [...messages, { sender: "You", text: input }];
+    let newMessages = [...messages];
+    const lastUserMessageIndex = newMessages.findLastIndex(msg => msg.sender === "You");
+
+    if (lastUserMessageIndex !== -1) {
+      // Update the last user message
+      newMessages[lastUserMessageIndex] = { sender: "You", text: input };
+    } else {
+      // Add a new user message
+      newMessages = [...messages, { sender: "You", text: input }];
+    }
+
     setMessages(newMessages);
     setInput("");
 
