@@ -14,7 +14,7 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:5000/login", loginData);
+      const res = await axios.post("https://itenararyplanner.onrender.com/login", loginData);
       const { token } = res.data;
       localStorage.setItem("token", token);
       navigate("/Home");

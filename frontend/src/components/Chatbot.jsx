@@ -69,7 +69,7 @@ const Chatbot = forwardRef((props, ref) => {
     setInput("");
 
     try {
-      const res = await axios.post("http://localhost:5000/api/chat", {
+      const res = await axios.post("https://itenararyplanner.onrender.com/api/chat", {
         message: input,
       });
       let botText = res.data.reply;
@@ -141,7 +141,7 @@ const Chatbot = forwardRef((props, ref) => {
       setMessages(newMessages);
 
       try {
-        const res = await axios.post("http://localhost:5000/api/chat", {
+        const res = await axios.post("https://itenararyplanner.onrender.com/api/chat", {
           message: prompt,
         });
         let botText = res.data.reply;

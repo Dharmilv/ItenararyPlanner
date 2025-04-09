@@ -18,7 +18,7 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:5000/register", formData);
+      const res = await axios.post("https://itenararyplanner.onrender.com/register", formData);
       alert(res.data.message);
       navigate("/login"); // redirect to login after successful registration
     } catch (err) {

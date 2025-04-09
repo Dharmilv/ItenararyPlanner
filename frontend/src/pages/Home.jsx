@@ -132,7 +132,7 @@ function HomePage() {
         return;
       }
       const { lat, lng } = geocodeData.results[0].geometry.location;
-      const proxyUrl = `http://localhost:5000/api/places?lat=${lat}&lng=${lng}&radius=1500`;
+      const proxyUrl = `https://itenararyplanner.onrender.com/api/places?lat=${lat}&lng=${lng}&radius=1500`;
       const placesResponse = await fetch(proxyUrl);
       if (!placesResponse.ok) {
         throw new Error(`Proxy error: ${placesResponse.statusText}`);
@@ -150,7 +150,7 @@ function HomePage() {
         longitude: lng,
       };
 
-      const response = await fetch('http://localhost:5000/api/submit', {
+      const response = await fetch('https://itenararyplanner.onrender.com/api/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

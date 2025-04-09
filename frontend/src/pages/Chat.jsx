@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import io from "socket.io-client";
 import axios from "axios";
 
-const socket = io("http://localhost:5000");
+const socket = io("https://itenararyplanner.onrender.com");
 
 const Chat = () => {
   const [email, setEmail] = useState("");
@@ -13,7 +13,7 @@ const Chat = () => {
 
   const joinRoom = async () => {
     try {
-      const res = await axios.post("http://localhost:5000/api/validate-user", { email });
+      const res = await axios.post("https://itenararyplanner.onrender.com/api/validate-user", { email });
       if (res.data.valid) {
         socket.emit("join-room", { email, teamCode });
         setJoined(true);
