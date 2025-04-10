@@ -181,11 +181,11 @@ function HomePage() {
 
   return (
     <>
-      <div className="container-fluid p-0">
+      <div className="container-fluid p-3 p-md-0">
         <div
-          className="row mt-5"
+          className="row mt-5 g-0"
           style={{
-            height: '80vh',
+            minHeight: '100vh',
             backgroundImage:
               'url("https://cdn.pixabay.com/photo/2021/08/14/04/15/mountains-6544522_640.jpg")',
             backgroundSize: 'cover',
@@ -195,18 +195,18 @@ function HomePage() {
         >
           {/* Left Side - Hero Text */}
           <div
-            className="col-md-6 d-flex flex-column justify-content-center text-white p-5"
+            className="col-md-6 col-12 d-flex flex-column justify-content-center text-white text-center text-md-start px-4 py-5"
             style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
           >
             <h1 className="display-4">TravelTales</h1>
-            <h2 className="h3">Let AI Be Your Expert Guide.</h2>
-            <p className="lead">
-              Bid farewell to generic holiday packages. Get your AI-personalized itineraries.
-            </p>
+            <h2 className="h4">Let AI Be Your Expert Guide.</h2>
+            <p className="lead">Bid farewell to generic holiday packages. Get your AI-personalized itineraries.</p>
           </div>
-          {/* Right Side - Visible Form on larger screens */}
-          <div className="col-md-6 d-none d-md-flex flex-column justify-content-center p-5">
-            <div className="bg-white p-4 rounded shadow">
+
+          {/* Right Side - Form Section */}
+          <div className="col-md-6 col-12 d-flex justify-content-center align-items-center px-3 py-5">
+            <div className="bg-white p-4 rounded shadow w-100" style={{ maxWidth: '500px' }}>
+
               {formStep === 1 && (
                 <form onSubmit={handleFirstStepSubmit}>
                   <h3 className="mb-4">Get Your Free Travel Plan Now!</h3>
@@ -281,23 +281,29 @@ function HomePage() {
                       </ul>
                     )}
                   </div>
+
                   <div className="mb-3">
                     <label className="form-label">When are you planning to travel?</label>
-                    <div className="d-flex">
-                      <input
-                        type="date"
-                        className="form-control me-2"
-                        id="start-date"
-                        onChange={(e) => setStartDate(e.target.value)} // Update start date state
-                      />
-                      <input
-                        type="date"
-                        className="form-control"
-                        id="end-date"
-                        onChange={(e) => setEndDate(e.target.value)} // Update end date state
-                      />
+                    <div className="row">
+                      <div className="col-12 col-md-6 mb-2 mb-md-0">
+                        <input
+                          type="date"
+                          className="form-control"
+                          id="start-date"
+                          onChange={(e) => setStartDate(e.target.value)}
+                        />
+                      </div>
+                      <div className="col-12 col-md-6">
+                        <input
+                          type="date"
+                          className="form-control"
+                          id="end-date"
+                          onChange={(e) => setEndDate(e.target.value)}
+                        />
+                      </div>
                     </div>
                   </div>
+
                   <button type="submit" className="btn btn-primary">
                     Continue
                   </button>
@@ -364,23 +370,21 @@ function HomePage() {
 
               )}
         {/* Floating Button for Chat */}
-      <button 
-        className=" btn btn-primary"
-        style={{
-          position: "fixed",
-          bottom: "20px",
-          right: "230px",
-          padding: "12px 20px",
-          color: "white",
-          border: "none",
-          borderRadius: "8px",
-          cursor: "pointer",
-          zIndex: 1000,
-        }}
-        onClick={() => navigate("/team-chat")}
-      >
-        Chat with Friends
-      </button>
+        <button 
+          className="btn btn-primary position-fixed d-block"
+          style={{
+            bottom: "20px",
+            right: "180px", // mobile default
+            padding: "10px 18px",
+            border: "none",
+            borderRadius: "8px",
+            zIndex: 1000,
+          }}
+          onClick={() => navigate("/team-chat")}
+        >
+          Chat with Friends
+        </button>
+
       </div>
       <Page2 />
       <Destinations />

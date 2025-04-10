@@ -173,8 +173,8 @@ const Chatbot = forwardRef((props, ref) => {
         style={{
           position: "fixed",
           bottom: "20px",
-          right: "30px",
-          padding: "12px 20px",
+          right: "10px",
+          padding: "10px 18px",
           backgroundColor: "#28a745",
           color: "white",
           border: "none",
@@ -193,26 +193,39 @@ const Chatbot = forwardRef((props, ref) => {
 
       {/* Chatbot Container (shown only when isOpen is true) */}
       {isOpen && (
-        <div className="chatbot-container">
+        <div
+          className="chatbot-container container-fluid p-3 bg-white rounded shadow"
+          style={{
+            position: "fixed",
+            bottom: "80px",
+            right: "10px",
+            width: "90%",
+            maxWidth: "400px",
+            height: "80vh",
+            overflow: "hidden",
+            zIndex: 1000,
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           {/* Close Button */}
           <button
-            className="close-chatbot-button"
-            onClick={() => setIsOpen(false)} // Close the chatbot when clicked
+            className="btn btn-danger rounded-circle position-absolute d-flex justify-content-center align-items-center shadow"
             style={{
-              position: "absolute",
               top: "10px",
               right: "10px",
-              padding: "11px",
-              backgroundColor: "red",
-              color: "white",
-              border: "none",
-              borderRadius: "50%",
-              cursor: "pointer",
+              width: "40px",
+              height: "40px",
               zIndex: 2,
+              fontSize: "1.2rem",
+              lineHeight: "1",
             }}
+            onClick={() => setIsOpen(false)}
+            aria-label="Close Chat"
           >
-            X
+            &times;
           </button>
+
 
           <h3>Travel Assistant</h3>
           <div className="chatbox">
@@ -229,21 +242,28 @@ const Chatbot = forwardRef((props, ref) => {
             ))}
             <div ref={chatEndRef} />
           </div>
-          <div className="input-area">
+          
+          <div className="input-area mb-1 d-flex flex-column justify-content-center ">
             <input
               type="text"
+              className="form-control mb-2"
               placeholder="Ask me anything about travel..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
             />
-            <button onClick={handleSend}>Send</button>
+
+              <div className="d-flex flex-column flex-sm-row gap-2">
+                <button className="btn btn-primary w-100 w-sm-50" onClick={handleSend}>
+                  Send
+                </button>
+                <button className="btn btn-success w-100 w-sm-50" style={{backgroundColor: "#28a745"}} onClick={downloadPDF}>
+                  Download Itinerary as PDF
+                </button>
+              </div>
+
           </div>
 
-          {/* Button to download the conversation as a PDF */}
-          <button onClick={downloadPDF} className="download-pdf-button">
-            Download Itinerary as PDF
-          </button>
         </div>
       )}
     </>

@@ -70,7 +70,7 @@ const Chat = () => {
         onKeyDown={(e) => e.key === "Enter" && sendMessage()}
         placeholder="Type a message..."
       />
-      <button onClick={sendMessage} className="bg-green-500 text-white px-4 py-2 rounded">Send</button>
+      <button onClick={sendMessage} style={{backgroundColor: "#28a745"}} className="text-white px-4 py-2 rounded ms-2">Send</button>
     </div>
   );
 };

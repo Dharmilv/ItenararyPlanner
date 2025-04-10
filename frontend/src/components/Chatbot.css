@@ -37,8 +37,11 @@
 
 .chatbox {
   flex-grow: 1;
-  padding: 10px;
   overflow-y: auto;
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
 }
 
 .message {
@@ -60,25 +63,24 @@
 
 .input-area {
   display: flex;
-  padding: 10px;
-  border-top: 1px solid #ccc;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .input-area input {
   flex-grow: 1;
-  padding: 8px;
+  min-width: 0;
+  padding: 10px;
+  border-radius: 6px;
   border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-right: 8px;
 }
 
 .input-area button {
-  padding: 8px 12px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
   background-color: #007bff;
   color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
 }
 
 .download-pdf-button {
