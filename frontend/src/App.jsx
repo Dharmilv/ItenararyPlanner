@@ -11,7 +11,7 @@ const App = () => {
     <Router>
       <Routes>
         {/* Redirect "/" to "/register" */}
-        <Route path="/" element={<Navigate to="/register" />} />
+        <Route path="/" element={<Navigate to="/login" />} />
 
         {/* Auth routes */}
         <Route path="/register" element={<Register />} />
