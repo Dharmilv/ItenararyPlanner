@@ -51,8 +51,6 @@ app.use('/api/trip', tripRoutes);
 
 app.use('/api', submissionRoutes);
 
-const placesRoutes = require('./routes/placesRoutes');
-app.use('/api', placesRoutes);
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 

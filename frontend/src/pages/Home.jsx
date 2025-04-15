@@ -26,17 +26,12 @@ function HomePage() {
 
   // Popup state
   const [showPopup, setShowPopup] = useState(false);
-  const [map, setMap] = useState(false);
 
   // Additional options
   const [numPeople, setNumPeople] = useState('');
   const [budget, setBudget] = useState(3000);
-  const [mode, setMode] = useState('');
   const [startDate, setStartDate] = useState(''); // State for start date
   const [endDate, setEndDate] = useState(''); // State for end date
-
-  // State to store tourist places returned from your proxy endpoint
-  const [places, setPlaces] = useState([]);
 
   // Function to fetch city suggestions (using RapidAPI GeoDB Cities API)
   const fetchCities = async (query, field) => {
@@ -117,37 +112,13 @@ function HomePage() {
   // 2. Use the retrieved coordinates to call your server-side proxy and fetch nearby places.
   const handleFinalSubmit = async (e) => {
     e.preventDefault();
-    setMap(true);
     try {
-      const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-        destination
-      )}&key=AIzaSyBhwcZV06UIeDf7qcyhkshqQRDcx3X-vrM`;
-      const geocodeResponse = await fetch(geocodeUrl);
-      if (!geocodeResponse.ok) {
-        throw new Error(`Geocoding error: ${geocodeResponse.statusText}`);
-      }
-      const geocodeData = await geocodeResponse.json();
-      if (geocodeData.results.length === 0) {
-        alert("No coordinates found for the specified destination.");
-        return;
-      }
-      const { lat, lng } = geocodeData.results[0].geometry.location;
-      const proxyUrl = `https://itenararyplanner.onrender.com/api/places?lat=${lat}&lng=${lng}&radius=1500`;
-      const placesResponse = await fetch(proxyUrl);
-      if (!placesResponse.ok) {
-        throw new Error(`Proxy error: ${placesResponse.statusText}`);
-      }
-      const placesData = await placesResponse.json();
-      setPlaces(placesData);
 
       const formData = {
         from,
         destination,
         numPeople,
-        budget,
-        mode,
-        latitude: lat,
-        longitude: lng,
+        budget
       };
 
       const response = await fetch('https://itenararyplanner.onrender.com/api/submit', {
@@ -351,24 +322,7 @@ function HomePage() {
             </div>
           </div>
         </div>
-        {formStep === 3 && (
-                <div>
-                    <h3 className="mb-4">Nearby Tourist Attractions for {destination}</h3>
-                    {places && places.length > 0 ? (
-                        <ul className="list-group">
-                        {places.slice(0, 10).map((place) => (
-                            <li key={place.place_id} className="list-group-item">
-                            <strong>{place.name}</strong>
-                            <p>{place.vicinity}</p>
-                            </li>
-                        ))}
-                        </ul>
-                    ) : (
-                        <p>No attractions found.</p>
-                    )}
-                </div>
 
-              )}
         {/* Floating Button for Chat */}
         <button 
           className="btn btn-primary position-fixed d-block"
@@ -390,9 +344,6 @@ function HomePage() {
       <Destinations />
       <ReviewComponent />
       <Chatbot ref={chatbotRef} /> {/* Pass the ref to Chatbot */}
-      {map && (
-        <ItineraryMap />
-      )}
     </>
   );
 }
