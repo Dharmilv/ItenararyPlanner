@@ -96,47 +96,64 @@ const Chatbot = forwardRef((props, ref) => {
   const downloadPDF = () => {
     const doc = new jsPDF();
     doc.setFont("helvetica", "normal");
-
     doc.text("Travel Itinerary", 20, 20);
 
-    const marginLeft = 20;
-    const marginTop = 30;
-    const maxWidth = 180;
+    let yOffset = 30;
     const lineHeight = 10;
-
-    let yOffset = marginTop;
-
-    const addText = (text) => {
-      const plainText = text.replace(/<[^>]*>/g, '');
-      const textWidth = doc.getStringUnitWidth(plainText) * doc.getFontSize() / doc.internal.scaleFactor;
-      let xPos = marginLeft;
-
-      if (textWidth > maxWidth) {
-        const words = plainText.split(' ');
-        let line = '';
-        for (let i = 0; i < words.length; i++) {
-          const testLine = line + words[i] + ' ';
-          const testWidth = doc.getStringUnitWidth(testLine) * doc.getFontSize() / doc.internal.scaleFactor;
-          if (testWidth > maxWidth) {
-            doc.text(line, xPos, yOffset);
-            line = words[i] + ' ';
-            yOffset += lineHeight;
-          } else {
-            line = testLine;
-          }
-        }
-        doc.text(line, xPos, yOffset);
-      } else {
-        doc.text(plainText, xPos, yOffset);
-      }
-      yOffset += lineHeight;
-    };
+    const marginLeft = 20;
+    const maxWidth = 180;
 
     messages.forEach((msg) => {
-      addText(`${msg.sender}: ${msg.text}`);
+      if (msg.sender === "Bot") {
+        // Format the bot's message using formatItinerary
+        const formattedHTML = formatItinerary(msg.text);
+
+        // Function to add HTML content to the PDF
+        const addHtmlToPdf = (html, yOffset) => {
+          const lines = html.split("<br>"); // Split HTML into lines
+          let currentY = yOffset;
+
+          lines.forEach((line) => {
+            // Remove HTML tags from the line
+            const cleanLine = line.replace(/<[^>]*>/g, "");
+
+            // Split the line into words
+            const words = cleanLine.split(" ");
+            let currentLine = "";
+
+            words.forEach((word) => {
+              const testLine = currentLine + word + " ";
+              const textWidth = doc.getTextWidth(testLine);
+
+              if (textWidth > maxWidth && currentLine.length > 0) {
+                doc.text(currentLine, marginLeft, currentY);
+                currentY += lineHeight;
+                currentLine = word + " ";
+              } else {
+                currentLine = testLine;
+              }
+            });
+
+            // Add the remaining text to the document
+            doc.text(currentLine, marginLeft, currentY);
+            currentY += lineHeight;
+          });
+
+          return currentY;
+        };
+
+        yOffset = addHtmlToPdf(formattedHTML, yOffset);
+      } else {
+        // For user messages, just add the text
+        const text = `${msg.sender}: ${msg.text}`;
+        doc.text(text, marginLeft, yOffset);
+        yOffset += lineHeight;
+      }
+
+      // Add a new page if content overflows
       if (yOffset > 270) {
         doc.addPage();
-        yOffset = marginTop;
+        yOffset = 30;
       }
     });
 
