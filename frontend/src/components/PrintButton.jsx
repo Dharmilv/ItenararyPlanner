@@ -118,17 +118,40 @@ const PrintButton = ({ images, tagline, isCollage, image }) => {
           <title>Print</title>
           <style>
             body {
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              height: 100vh;
-              margin: 0;
               font-family: Arial, sans-serif;
+              padding: 20px;
+            }
+            .itinerary-output {
+              margin-top: 10px;
+              padding: 15px;
+              border: 1px solid #ddd;
+              border-radius: 5px;
+              font-size: 14px;
+              line-height: 1.6;
+            }
+
+            .itinerary-output h3 {
+              font-size: 1.2em;
+              margin-bottom: 0.5em;
+              color: #333;
+              border-bottom: 1px solid #eee;
+              padding-bottom: 0.3em;
+            }
+
+            .itinerary-output ul {
+              padding-left: 0;
+              list-style-type: none;
+            }
+
+            .itinerary-output li {
+              margin-bottom: 0.5em;
             }
           </style>
         </head>
         <body>
-          ${printContent}
+          <div class="itinerary-output">
+            ${printContent}
+          </div>
           <script>
             window.onload = function() {
               window.print();
