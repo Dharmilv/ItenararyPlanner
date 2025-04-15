@@ -301,8 +301,8 @@ function HomePage() {
                       className="form-range"
                       id="budget"
                       min="3000"
-                      max="10000"
-                      step="100"
+                      max="100000"
+                      step="500"
                       value={budget}
                       onChange={(e) => setBudget(e.target.value)}
                     />

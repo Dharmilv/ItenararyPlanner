@@ -2,7 +2,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 70%; /* Cover half the page width */
+  width: 80%; /* Cover half the page width */
   height: 100%; /* Cover the entire page height */
   background-color: white;
   border: 1px solid #ccc;

@@ -54,7 +54,15 @@ const AIItineraryPlanner = () => {
       <div className="grid grid-cols-2 gap-4">
         <input placeholder="From" className="p-2 border rounded" value={form.from} onChange={(e) => setForm({ ...form, from: e.target.value })} />
         <input placeholder="To" className="p-2 border rounded" value={form.to} onChange={(e) => setForm({ ...form, to: e.target.value })} />
-        <input placeholder="Budget ($)" type="number" className="p-2 border rounded" value={form.budget} onChange={(e) => setForm({ ...form, budget: e.target.value })} />
+       <input
+          type="range"
+          placeholder="Budget ($)"
+          className="p-2 border rounded"
+          value={form.budget}
+          min="0"
+          max="100000"
+          onChange={(e) => setForm({ ...form, budget: e.target.value })}
+        />
         <input placeholder="Days" type="number" className="p-2 border rounded" value={form.days} onChange={(e) => setForm({ ...form, days: e.target.value })} />
       </div>
 
