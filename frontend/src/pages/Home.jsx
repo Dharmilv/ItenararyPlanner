@@ -5,7 +5,6 @@ import Page2 from './Page2';
 import Destinations from './Destinations';
 import ReviewComponent from './ReviewComponent';
 import Chatbot from '../components/Chatbot';
-import ItineraryMap from '../components/ItineraryMap';
 import { User } from 'lucide-react';
 
 
