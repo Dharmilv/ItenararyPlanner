@@ -1,7 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const axios = require('axios');
-const cors = require("cors");
 require("dotenv").config();
 
 const authRoutes = require("./routes/auth");
@@ -13,7 +12,13 @@ const app = express();
 app.use(express.json());
 
 // ✅ CORS Setup
-app.use(cors());
+const cors = require("cors");
+
+app.use(cors({
+  origin: "https://itenararyplanner.netlify.app",
+  methods: ["GET", "POST"],
+  credentials: true
+}));
 
 // ✅ Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -82,13 +87,14 @@ const http = require("http");
 const { Server } = require("socket.io");
 
 const server = http.createServer(app);
-const io = new Server(server, {
+const io = require("socket.io")(server, {
   cors: {
     origin: "https://itenararyplanner.netlify.app",
     methods: ["GET", "POST"],
-    credentials: true,
-  },
+    credentials: true
+  }
 });
+
 
 // Socket.IO logic
 io.on("connection", (socket) => {
