@@ -84,7 +84,7 @@ const { Server } = require("socket.io");
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "https://itenararyplanner.onrender.com",
+    origin: "https://itenararyplanner.netlify.app",
     methods: ["GET", "POST"],
     credentials: true,
   },
