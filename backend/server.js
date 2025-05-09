@@ -52,8 +52,8 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const rateLimit = require("express-rate-limit");
 
 const chatLimiter = rateLimit({
-  windowMs: 60 * 10000, // 1 minute
-  max: 2, // Max 3 requests per user/IP per minute
+  windowMs: 60 * 10000, // 10 minute
+  max: 2, // Max 2 requests per user/IP per minute
   message: "Too many requests. Please try again later.",
 });
 
@@ -93,7 +93,7 @@ const { Server } = require("socket.io");
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "https://itenararyplanner.netlify.app",
+    origin: "https://itenaryplanner.netlify.app",
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -128,10 +128,3 @@ io.on("connection", (socket) => {
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 
-
-
-
-
-// ✅ Start Server
-// const PORT = process.env.PORT || 5000;
-// app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

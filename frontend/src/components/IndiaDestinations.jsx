@@ -71,11 +71,6 @@ function IndiaDestinations() {
           </Link>
         </div>
       ))}
-      <div className="col-12 text-end">
-        <button className="btn btn-outline-primary">
-          <i className="bi bi-arrow-right"></i>
-        </button>
-      </div>
     </div>
   );
 }
