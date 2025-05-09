@@ -13,7 +13,20 @@ const app = express();
 app.use(express.json());
 
 // ✅ CORS Setup
-app.use(cors());
+const allowedOrigins = ["https://itenaryplanner.netlify.app", "http://localhost:5173"];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS not allowed from this origin"));
+    }
+  },
+  credentials: true,
+}));
+
 
 // ✅ Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -93,7 +106,7 @@ const { Server } = require("socket.io");
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "https://itenaryplanner.netlify.app",
+    origin:["https://itenaryplanner.netlify.app","http://localhost:5174"],
     methods: ["GET", "POST"],
     credentials: true,
   },
