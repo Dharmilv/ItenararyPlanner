@@ -341,7 +341,7 @@ function HomePage() {
       </div>
       <Page2 />
       {/* <Destinations /> */}
-      {/* <ReviewComponent /> */}
+      <ReviewComponent />
       <Chatbot ref={chatbotRef} /> {/* Pass the ref to Chatbot */}
     </>
   );
