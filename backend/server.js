@@ -49,8 +49,15 @@ app.use('/api', submissionRoutes);
 
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const rateLimit = require("express-rate-limit");
 
-app.post('/api/chat', async (req, res) => {
+const chatLimiter = rateLimit({
+  windowMs: 60 * 10000, // 1 minute
+  max: 2, // Max 3 requests per user/IP per minute
+  message: "Too many requests. Please try again later.",
+});
+
+app.post('/api/chat', chatLimiter, async (req, res) => {
   const userMessage = req.body.message;
 
   try {
@@ -67,6 +74,8 @@ app.post('/api/chat', async (req, res) => {
     );
 
     const botReply = response.data.candidates?.[0]?.content?.parts?.[0]?.text;
+    console.log(botReply);
+
     res.json({ reply: botReply || "No reply generated." });
   } catch (error) {
     console.error("Gemini API Error:", error.response?.data || error.message);
