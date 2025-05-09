@@ -323,7 +323,7 @@ function HomePage() {
         </div>
 
         {/* Floating Button for Chat */}
-        <button 
+        {/* <button 
           className="btn btn-primary position-fixed d-block"
           style={{
             bottom: "20px",
@@ -336,12 +336,12 @@ function HomePage() {
           onClick={() => navigate("/team-chat")}
         >
           Chat with Friends
-        </button>
+        </button> */}
 
       </div>
       <Page2 />
-      <Destinations />
-      <ReviewComponent />
+      {/* <Destinations /> */}
+      {/* <ReviewComponent /> */}
       <Chatbot ref={chatbotRef} /> {/* Pass the ref to Chatbot */}
     </>
   );
