@@ -106,7 +106,7 @@ const { Server } = require("socket.io");
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin:["https://itenaryplanner.netlify.app","http://localhost:5174"],
+    origin:["https://itenaryplanner.netlify.app","http://localhost:5173"],
     methods: ["GET", "POST"],
     credentials: true,
   },
