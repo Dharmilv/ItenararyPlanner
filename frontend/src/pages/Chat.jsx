@@ -50,7 +50,7 @@ const res = await axios.post("https://itenararyplanner.onrender.com/api/validate
         <h2 className="text-xl font-bold mb-4">Join Chat Room</h2>
         <input placeholder="Email" className="border p-2 w-full mb-2" value={email} onChange={(e) => setEmail(e.target.value)} />
         <input placeholder="Team Code" className="border p-2 w-full mb-2" value={teamCode} onChange={(e) => setTeamCode(e.target.value)} />
-        <button onClick={joinRoom} className="bg-blue-500 text-white px-4 py-2 rounded">Join</button>
+        <button onClick={joinRoom} style={{backgroundColor: "#28a745"}} className="text-white px-4 py-2 rounded ms-2">Join</button>
       </div>
     );
   }
