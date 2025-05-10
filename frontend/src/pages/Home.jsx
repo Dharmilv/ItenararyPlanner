@@ -168,7 +168,7 @@ function HomePage() {
             className="col-md-6 col-12 d-flex flex-column justify-content-center text-white text-center text-md-start px-4 py-5"
             style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
           >
-            <h1 className="display-4">TravelTales</h1>
+            <h1 className="display-4">Travel-Tales</h1>
             <h2 className="h4">Let AI Be Your Expert Guide.</h2>
             <p className="lead">Bid farewell to generic holiday packages. Get your AI-personalized itineraries.</p>
           </div>
@@ -323,7 +323,7 @@ function HomePage() {
         </div>
 
         {/* Floating Button for Chat */}
-        {/* <button 
+        <button 
           className="btn btn-primary position-fixed d-block"
           style={{
             bottom: "20px",
@@ -336,12 +336,12 @@ function HomePage() {
           onClick={() => navigate("/team-chat")}
         >
           Chat with Friends
-        </button> */}
+        </button>
 
       </div>
       <Page2 />
       {/* <Destinations /> */}
-      <ReviewComponent />
+      {/* <ReviewComponent /> */}
       <Chatbot ref={chatbotRef} /> {/* Pass the ref to Chatbot */}
     </>
   );

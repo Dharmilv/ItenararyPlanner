@@ -65,8 +65,8 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const rateLimit = require("express-rate-limit");
 
 const chatLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hr
-  max: 2, // Max 2 requests per user/IP per minute
+  windowMs: 2 * 60 * 1000, // 1 min
+  max: 3, // Max 2 requests per user/IP per minute
   message: "Too many requests. Please try again later.",
 });
 
