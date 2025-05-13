@@ -14,7 +14,7 @@ function Destinations() {
         style={{
           height: '40vh',
           backgroundImage:
-            'linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url("https://th.bing.com/th/id/OIP.-avYl7Wyj4qN_qOG4ph8SQHaEu?rs=1&pid=ImgDetMain")',
+          'linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url("https://th.bing.com/th/id/OIP.-avYl7Wyj4qN_qOG4ph8SQHaEu?rs=1&pid=ImgDetMain")',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
