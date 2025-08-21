@@ -75,7 +75,8 @@ app.post('/api/chat', chatLimiter, async (req, res) => {
 
   try {
     const response = await axios.post(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-002:generateContent?key=${GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+      
       {
         contents: [{ parts: [{ text: userMessage }] }],
       },
@@ -135,9 +136,6 @@ io.on("connection", (socket) => {
   });
 });
 
-// ✅ Replace this line:
-// app.listen(PORT, () => console.log(...))
-// 🔁 With this:
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 
