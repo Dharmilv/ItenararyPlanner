@@ -44,7 +44,15 @@ router.post("/login", async (req, res) => {
     if (!isMatch) return res.status(400).json({ message: "❌ Invalid credentials" });
 
     // ✅ Update last login time
-    user.lastLogin = new Date();
+    function getISTDate() {
+      const now = new Date();
+      // IST = UTC + 5 hours 30 minutes
+      const istOffset = 5.5 * 60 * 60 * 1000; 
+      return new Date(now.getTime() + istOffset);
+    }
+
+    // Inside login route
+    user.lastLogin = getISTDate();
     await user.save();
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
